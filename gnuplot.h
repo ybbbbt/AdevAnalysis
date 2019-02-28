@@ -36,10 +36,10 @@ private:
     FILE* m_pipe = nullptr;
 
     static FILE* gp_popen(const char *command, const char *mode) {
-        return _popen(command, mode);
+        return popen(command, mode);
     }
 
     static int gp_pclose(FILE *pipe) {
-        return _pclose(pipe);
+        return pclose(pipe);
     }
 };

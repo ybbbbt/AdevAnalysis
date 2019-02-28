@@ -2,7 +2,7 @@
 #include <array>
 #include <vector>
 #include <map>
-#include <ppl.h>
+#include <tbb/tbb.h>
 
 #include "RANSAC.h"
 #include "gnuplot.h"
@@ -12,7 +12,7 @@ std::vector<double> read_vector(const std::string &filepath) {
     FILE *file = fopen(filepath.c_str(), "r");
     if (!file) return result;
     double v;
-    while (!feof(file) && fscanf(file, "%Lf", &v) > 0) {
+    while (!feof(file) && fscanf(file, "%lf", &v) > 0) {
         result.push_back(v);
     }
     fclose(file);
@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
     }
 
     printf("Calculating");
-    concurrency::parallel_for_each(adev_data.begin(), adev_data.end(), [&](pair<const size_t, std::pair<double, double>> &a) {
+    tbb::parallel_for_each(adev_data.begin(), adev_data.end(), [&](pair<const size_t, std::pair<double, double>> &a) {
         a.second = adev(data, a.first);
         printf(".");
     });
@@ -137,10 +137,10 @@ int main(int argc, char* argv[]) {
     }
     plot.command("EOD");
 
-    plot.command("set terminal windows enhanced");
+    plot.command("set terminal qt enhanced");
     plot.command("set title 'Noise Analysis'");
     plot.command("set ylabel 'ADEV'");
-    plot.command("set xlabel '¦Ó'");
+    plot.command("set xlabel 'Â¦Ã“'");
     plot.command("set logscale xy");
     plot.command("f(x) = a/sqrt(x)+b*sqrt(x)");
     //plot.command("fit f(x) $DATA using 1:2 via a,b");
