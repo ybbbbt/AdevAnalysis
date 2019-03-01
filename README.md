@@ -1,14 +1,16 @@
 # AdevAnalysis
 Allan deviation for IMU/MEMS intrinsic calibration.
 
-Usage: AdevAnalysis <datafile> <frequency>
+Usage:
+```bash
+sensors_decode < 00_0.sensors
+adev_analysis
+```
 
-Put sensor readings in a text file and run this code against it.
-It compile and runs in Visual Studio, since I used PPL from VS...
+For `.sensors` file format, please go to <https://github.com/itsuhane/libsensors>
 
-This code uses GNUPlot, just install it and make sure its `bin\` directory is added to your `PATH`.
+This tool requires Eigen for sensors decoding and gnuplot for image output, feel free to remove this part in the code if you don't need the plot.
 
 ## To be Implemented
-* multiple columns
-* timestamp
+* frequency estimation (for now the frequency is hardcoded)
 * outlier removal
