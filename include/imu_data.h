@@ -6,6 +6,7 @@
 #include <fstream>
 #include <vector>
 #include <array>
+#include <iostream>
 
 using imu_data = std::array<double, 4>;  // t, x, y, z
 
@@ -32,7 +33,7 @@ struct ImuCsv {
         }
 
         mean[0] = (items.size() - 1) / (items.back()[0] - items.front()[0]);
-        for (size_t i = 1; i < items.size(); ++i) {
+        for (size_t i = 1; i < items[0].size(); ++i) {
             mean[i] /= items.size();
         }
 

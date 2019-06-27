@@ -8,19 +8,24 @@
 #include <gnuplot.h>
 #include <adev_analysis.h>
 
-std::array<std::vector<double>, 3> read_vectors(const std::string &filename) {
+std::array<std::vector<double>, 3> read_vectors(const std::string &filename, double *freq = nullptr) {
     std::array<std::vector<double>, 3> result;
+    double start_time = -1, end_time = -1, count = -1;
     if (FILE *csv = fopen(filename.c_str(), "r")) {
         char header_line[2048];
         fscanf(csv, "%2047[^\n]", header_line);
-        double x, y, z;
-        while (!feof(csv) && fscanf(csv, "%*lf,%lf,%lf,%lf\n", &x, &y, &z) == 3) {
+        double t, x, y, z;
+        while (!feof(csv) && fscanf(csv, "%lf,%lf,%lf,%lf\n", &t, &x, &y, &z) == 4) {
             result[0].emplace_back(x);
             result[1].emplace_back(y);
             result[2].emplace_back(z);
+            if (start_time < 0) start_time = t;
+            end_time = t;
+            count++;
         }
         fclose(csv);
     }
+    if (freq) *freq = count / (end_time - start_time);
     return result;
 }
 
@@ -113,11 +118,10 @@ void process_data(const std::vector<double> &data, double freq, const std::strin
 
 int main(int argc, char* argv[]) {
     std::array<std::vector<double>, 3> data;
-    double freq = 100;
-    printf("freq = %.7e\n", freq);
-
+    double freq;
     printf("reading acc.csv...\n");
-    data = read_vectors("acc.csv");
+    data = read_vectors("acc.csv", &freq);
+    printf("freq = %.7e\n", freq);
     printf("acc.csv points = %zu\n", data[0].size());
     printf("calculating ax");
     process_data(data[0], freq, "ax");
